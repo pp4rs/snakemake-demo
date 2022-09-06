@@ -16,6 +16,7 @@ rule all_models:
 
 
 rule estimate_model:
+    conda: "envs/estimation.yaml"
     input:
         file = "data/clean/census_data.csv",
         script = "src/estimation/estimate_model.R",
