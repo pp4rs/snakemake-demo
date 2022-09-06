@@ -2,6 +2,7 @@ DATA_URL = "https://economics.mit.edu/files/2853"
 
 
 rule clean_data:
+    conda: "envs/data-prep.yaml"
     input:
         file = "data/raw/QOB.txt",
         script = "src/data/prepare_data.py"
