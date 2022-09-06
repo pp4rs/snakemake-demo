@@ -1,0 +1,11 @@
+name: ak-figures
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.10.5
+  - pandas=1.4.3
+  - typer=0.6.1
+  - matplotlib=3.5.2
+  - seaborn=0.11.2
