@@ -1,3 +1,6 @@
+DATA_URL = "https://economics.mit.edu/files/2853"
+
+
 rule clean_data:
     input:
         file = "data/raw/QOB.txt",
@@ -5,7 +8,7 @@ rule clean_data:
     output:
         file = "data/clean/census_data.csv"
     shell:
-        "python {input.script}"
+        "python {input.script} {input.file} {output.file}"
 
 
 rule download_data:
@@ -14,4 +17,4 @@ rule download_data:
     output:
         file = "data/raw/QOB.txt"
     shell:
-        "bash {input.script}"
+        "bash {input.script} {DATA_URL} {output.file}"

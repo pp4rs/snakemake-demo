@@ -1,7 +1,13 @@
 set -e
 
-cd data/raw
-wget --no-check-certificate -O QOB.rar https://economics.mit.edu/files/2853
+URL=$1
+FILEPATH=$2
+
+DIR="$(dirname "${FILEPATH}")"
+FILE="$(basename "${FILEPATH}")"
+
+cd "$DIR"
+wget --no-check-certificate -O "QOB.rar" "$URL"
 unrar x QOB.rar
-mv QOB QOB.txt
+mv QOB "$FILE"
 rm QOB.rar
