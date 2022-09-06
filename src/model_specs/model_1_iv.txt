@@ -1,1 +1,0 @@
-log_weekly_wage ~ 1 | year_of_birth_within_decade | (education ~ factor(quarter_of_birth) * factor(year_of_birth_within_decade))

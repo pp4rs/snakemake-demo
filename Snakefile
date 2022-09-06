@@ -1,13 +1,15 @@
 DATA_URL = "https://economics.mit.edu/files/2853"
-MODELS = glob_wildcards("src/model_specs/{model_spec}.txt").model_spec
+MODELS = glob_wildcards("src/model_specs/{model_name}.json").model_name
+MODEL_TYPES = ["iv", "ols"]
 COHORTS = [(30, 39), (40, 49)]
 
 
 rule all_models:
     input:
         file = expand(
-            "out/models/{model_name}_{cohort[0]}_{cohort[1]}.rds",
+            "out/models/{model_name}_{model_type}_{cohort[0]}_{cohort[1]}.rds",
             model_name = MODELS,
+            model_type = MODEL_TYPES,
             cohort = COHORTS
         )
 
@@ -17,14 +19,15 @@ rule estimate_model:
     input:
         file = "data/clean/census_data.csv",
         script = "src/estimation/estimate_model.R",
-        model_spec = "src/model_specs/{model_name}.txt"
+        model_spec = "src/model_specs/{model_name}.json"
     output:
-        file = "out/models/{model_name}_{from_}_{to}.rds"
+        file = "out/models/{model_name}_{model_type}_{from_}_{to}.rds"
     shell:
         "Rscript {input.script} --data_path {input.file} \
                                 --formula_path {input.model_spec} \
                                 --model_out_path {output.file} \
-                                --cohort {wildcards.from_},{wildcards.to}"
+                                --cohort {wildcards.from_},{wildcards.to} \
+                                --model_type {wildcards.model_type}"
 
 
 rule create_figure_schooling_diff:

@@ -1,0 +1,13 @@
+{
+    "dep_var": "log_weekly_wage",
+    "indep_vars": [
+        "education", "ageq", "ageq_squared"
+    ],
+    "fixed_effects": [
+        "year_of_birth_within_decade"
+    ],
+    "instrumental": {
+        "instrumented_vars": ["education"],
+        "instruments": ["factor(quarter_of_birth) * factor(year_of_birth_within_decade)"]
+    }
+}
