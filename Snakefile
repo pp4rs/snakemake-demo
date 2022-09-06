@@ -4,6 +4,29 @@ MODEL_TYPES = ["iv", "ols"]
 COHORTS = [(30, 39), (40, 49)]
 
 
+rule regression_tables_all:
+    input:
+        table = expand(
+            "out/tables/regression_table_{cohort[0]}_{cohort[1]}.tex",
+            cohort = COHORTS
+        )
+
+
+rule regression_table:
+    conda: "envs/estimation.yaml"
+    input:
+        models = expand(
+            "out/models/{model_name}_{model_type}_{from_}_{to}.rds",
+            model_name = MODELS,
+            model_type = MODEL_TYPES,
+            allow_missing=True
+        )
+    output:
+        table = "out/tables/regression_table_{from_}_{to}.tex"
+    shell:
+        "Rscript src/tables/regression_table.R --models '{input.models}' --output_path {output.table}"
+
+
 rule all_models:
     input:
         file = expand(
@@ -12,7 +35,6 @@ rule all_models:
             model_type = MODEL_TYPES,
             cohort = COHORTS
         )
-
 
 
 rule estimate_model:
