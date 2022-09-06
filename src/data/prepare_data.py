@@ -1,19 +1,18 @@
 import pandas as pd
 import numpy as np
-import argparse
+import typer
 
 
 def read_data(path):
     """Reads data from path and returns a pandas DataFrame.
     Also renames columns to be more descriptive.
-    
+
     Args:
         path (str): path to data
-        
+
     Returns:
         pandas.DataFrame
     """
-
 
     colnames = [f"v{i+1}" for i in range(27)]
     data = pd.read_csv(
@@ -77,27 +76,14 @@ def prepare_data(data):
     return data
 
 
-def main():
+def main(input_path: str, output_path: str):
     """Main function."""
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "input_path",
-        type=str,
-        help="Path to data"
-    )
-    parser.add_argument(
-        "output_path",
-        type=str,
-        help="Path to save cleaned data"
-    )
-    args = parser.parse_args()
-
-    data = read_data(args.input_path)
+    data = read_data(input_path)
     data = prepare_data(data)
-    data.to_csv(args.output_path, index=False)
-    print(f"Exported data to {args.output_path}")
+    data.to_csv(output_path, index=False)
+    print(f"Exported data to {output_path}")
 
 
 if __name__ == "__main__":
-    main()
+    typer.run(main)
