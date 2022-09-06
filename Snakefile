@@ -21,6 +21,7 @@ rule paper:
 
 rule regression_tables_all:
     input:
+        script = "src/estimation/estimate_model.R",
         table = expand(
             "out/tables/regression_table_{cohort[0]}_{cohort[1]}.tex",
             cohort = COHORTS
@@ -30,6 +31,7 @@ rule regression_tables_all:
 rule regression_table:
     conda: "envs/estimation.yaml"
     input:
+        script = "src/tables/regression_table.R",
         models = expand(
             "out/models/{model_name}_{model_type}_{from_}_{to}.rds",
             model_name = MODELS,
@@ -39,11 +41,12 @@ rule regression_table:
     output:
         table = "out/tables/regression_table_{from_}_{to}.tex"
     shell:
-        "Rscript src/tables/regression_table.R --models '{input.models}' --output_path {output.table}"
+        "Rscript {input.script} --models '{input.models}' --output_path {output.table}"
 
 
 rule all_models:
     input:
+        script = "src/estimation/estimate_model.R",
         file = expand(
             "out/models/{model_name}_{model_type}_{cohort[0]}_{cohort[1]}.rds",
             model_name = MODELS,
