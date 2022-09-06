@@ -1,4 +1,5 @@
 from os.path import splitext
+from src.utils.makeutils import find_input_files
 
 
 DATA_URL = "https://economics.mit.edu/files/2853"
@@ -9,15 +10,7 @@ COHORTS = [(30, 39), (40, 49)]
 
 rule paper:
     input:
-        tables = expand(
-            "out/tables/regression_table_{cohort[0]}_{cohort[1]}.tex",
-            cohort = COHORTS
-        ),
-        lineplots = expand(
-            "out/figures/line_year_education_{cohort[0]}_{cohort[1]}.png",
-            cohort = COHORTS
-        ),
-        barplot = "out/figures/barplot_schooling_diff.png",
+        included = find_input_files("src/paper/paper.tex"),
         tex = "src/paper/paper.tex"
     output:
         pdf = "out/paper/paper.pdf"

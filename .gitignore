@@ -2,3 +2,4 @@
 /out/
 /playground/
 .snakemake/
+__pycache__/
