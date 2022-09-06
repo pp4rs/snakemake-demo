@@ -4,6 +4,21 @@ MODEL_TYPES = ["iv", "ols"]
 COHORTS = [(30, 39), (40, 49)]
 
 
+rule paper:
+    input:
+        tables = "out/tables/regression_table_{cohort[0]}_{cohort[1]}.tex",
+        lineplots = expand(
+            "out/figures/line_year_education_{cohort[0]}_{cohort[1]}.png",
+            cohort = COHORTS
+        ),
+        barplot = "out/figures/barplot_schooling_diff.png",
+        tex = "src/paper/paper.tex"
+    output:
+        pdf = "out/paper/paper.pdf"
+    shell:
+        "latexmk -pdf -jobname={output.pdf} {input.tex}"
+
+
 rule regression_tables_all:
     input:
         table = expand(

@@ -17,6 +17,9 @@ load_and_filter_data <- function(data_path, cohort_limits) {
 
 estimate_model <- function(df, form) {
     model <- felm(form, df)
+    model$data <- NULL
+    model$model <- NULL
+
     return(model)
 }
 

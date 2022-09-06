@@ -44,7 +44,7 @@ main <- function() {
     models <- map(paths, readRDS)
     names(models) <- paste("(", seq(1, length(models)), ")", sep = "")
 
-    #extra_rows <- create_extra_row_tibble(models)
+    extra_rows <- create_extra_row_tibble(models)
 
     coef_names <- c(
         "education" = "Years of education",
@@ -60,8 +60,8 @@ main <- function() {
         models,
         output = opt$output_path,
         gof_omit = ".*",
-        coef_map = coef_names#,
-        #add_rows = extra_rows
+        coef_map = coef_names,
+        add_rows = extra_rows
     )
 
 }
