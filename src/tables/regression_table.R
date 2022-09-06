@@ -42,7 +42,13 @@ main <- function() {
 
     paths <- str_split(opt$models, " ")[[1]]
     models <- map(paths, readRDS)
-    names(models) <- paste("(", seq(1, length(models)), ")", sep = "")
+    names(models) <- map_chr(models, function(model) paste(str_to_upper(model$type), model$name))
+
+    num_models <- length(models)
+    alphabetical_order <- order(names(models))
+    flip_order <- rep(c(num_models / 2, 0), times = num_models / 2) + rep(seq(num_models / 2), each = 2)
+
+    models <- models[alphabetical_order][flip_order]
 
     extra_rows <- create_extra_row_tibble(models)
 

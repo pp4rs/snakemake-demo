@@ -1,4 +1,5 @@
 {
+    "name": "(1)",
     "dep_var": "log_weekly_wage",
     "indep_vars": [
         "education"

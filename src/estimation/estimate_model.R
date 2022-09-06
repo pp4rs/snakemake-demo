@@ -24,8 +24,7 @@ estimate_model <- function(df, form) {
 }
 
 
-load_formula <- function(formula_path, iv=FALSE) {
-    specs <- read_json(formula_path)
+load_formula <- function(specs, iv=FALSE) {
     dep_var <- specs$dep_var
     indep_vars <- unlist(specs$indep_vars)
 
@@ -85,11 +84,15 @@ main <- function() {
         stop("model_type must be either 'iv' or 'ols'")
     }
 
+    specs <- read_json(opt$formula_path)
+
     limits <- as.integer(str_split(opt$cohort, ",")[[1]])
     df <- load_and_filter_data(opt$data_path, limits)
-    form <- load_formula(opt$formula_path, iv=iv)
+    form <- load_formula(specs, iv=iv)
 
     model <- estimate_model(df, form)
+    model$name <- specs$name
+    model$type <- opt$model_type
     saveRDS(model, opt$model_out_path)
 
 }
