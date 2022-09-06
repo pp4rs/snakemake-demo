@@ -61,10 +61,10 @@ def prepare_data(data):
     data = data.copy()
 
     data["cohort"] = np.where(
-        (40 < data["year_of_birth"]) & (data["year_of_birth"] <= 49),
+        (40 <= data["year_of_birth"]) & (data["year_of_birth"] <= 49),
         "40-49",
         np.where(
-            (30 < data["year_of_birth"]) & (data["year_of_birth"] <= 40),
+            (30 <= data["year_of_birth"]) & (data["year_of_birth"] <= 39),
             "30-39",
             "20-29"
         )
