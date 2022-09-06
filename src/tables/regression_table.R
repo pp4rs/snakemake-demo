@@ -62,6 +62,7 @@ main <- function() {
         "ageq_squared" = "Age-squared"
     )
 
+    options(modelsummary_format_numeric_latex = "mathmode")
     modelsummary(
         models,
         output = opt$output_path,

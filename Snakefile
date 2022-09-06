@@ -1,3 +1,6 @@
+from os.path import splitext
+
+
 DATA_URL = "https://economics.mit.edu/files/2853"
 MODELS = glob_wildcards("src/model_specs/{model_name}.json").model_name
 MODEL_TYPES = ["iv", "ols"]
@@ -6,7 +9,10 @@ COHORTS = [(30, 39), (40, 49)]
 
 rule paper:
     input:
-        tables = "out/tables/regression_table_{cohort[0]}_{cohort[1]}.tex",
+        tables = expand(
+            "out/tables/regression_table_{cohort[0]}_{cohort[1]}.tex",
+            cohort = COHORTS
+        ),
         lineplots = expand(
             "out/figures/line_year_education_{cohort[0]}_{cohort[1]}.png",
             cohort = COHORTS
@@ -15,8 +21,10 @@ rule paper:
         tex = "src/paper/paper.tex"
     output:
         pdf = "out/paper/paper.pdf"
+    params:
+        output_name = lambda wildcards, output: splitext(output.pdf)[0]
     shell:
-        "latexmk -pdf -jobname={output.pdf} {input.tex}"
+        "latexmk -pdf -interaction=nonstopmode -jobname={params.output_name} {input.tex}"
 
 
 rule regression_tables_all:

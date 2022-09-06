@@ -1,0 +1,47 @@
+\documentclass[a4paper]{article}
+
+\usepackage{fullpage}
+\usepackage{lipsum}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{lscape}
+
+\author{Martin Stancsics}
+\title{A short but imaginative title}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+\lipsum[1-3]
+
+\section{The section with figures}
+\lipsum[5]
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{out/figures/line_year_education_30_39.png}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{out/figures/line_year_education_40_49.png}
+\end{figure}
+\lipsum[4]
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{out/figures/barplot_schooling_diff.png}
+\end{figure}
+
+\section{Regressions}
+No mock econ paper is complete without mock Regressions
+\begin{landscape}
+    \input{out/tables/regression_table_30_39.tex}
+    \input{out/tables/regression_table_40_49.tex}
+\end{landscape}
+
+\section{My earth-shattering conclusions}
+\lipsum[8-9]
+
+\end{document}
