@@ -2,7 +2,7 @@
     "dep_var": "log_weekly_wage",
     "indep_vars": [
         "education", "ageq", "ageq_squared",
-        "married", "smsa", "neweng", "midatl", "enocent", "wnocent", "soatl", "esocent", "wsocent", "mt"
+        "race", "married", "smsa", "neweng", "midatl", "enocent", "wnocent", "soatl", "esocent", "wsocent", "mt"
     ],
     "fixed_effects": [
         "year_of_birth_within_decade"
