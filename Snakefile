@@ -2,10 +2,8 @@ from os.path import splitext
 from src.utils.makeutils import find_input_files
 
 
-DATA_URL = "https://economics.mit.edu/files/2853"
+configfile: "snake_config.yaml"
 MODELS = glob_wildcards("src/model_specs/{model_name}.json").model_name
-MODEL_TYPES = ["iv", "ols"]
-COHORTS = [(30, 39), (40, 49)]
 
 
 rule paper:
@@ -25,7 +23,7 @@ rule regression_tables_all:
         script = "src/estimation/estimate_model.R",
         table = expand(
             "out/tables/regression_table_{cohort[0]}_{cohort[1]}.tex",
-            cohort = COHORTS
+            cohort = config["cohorts"]
         )
 
 
@@ -36,7 +34,7 @@ rule regression_table:
         models = expand(
             "out/models/{model_name}_{model_type}_{from_}_{to}.rds",
             model_name = MODELS,
-            model_type = MODEL_TYPES,
+            model_type = config["model_types"],
             allow_missing=True
         )
     output:
@@ -51,8 +49,8 @@ rule all_models:
         file = expand(
             "out/models/{model_name}_{model_type}_{cohort[0]}_{cohort[1]}.rds",
             model_name = MODELS,
-            model_type = MODEL_TYPES,
-            cohort = COHORTS
+            model_type = config["model_types"],
+            cohort = config["cohorts"]
         )
 
 
@@ -88,7 +86,7 @@ rule create_figure_schooling_diff:
 rule all_figures_birth_educ:
     input:
         file = expand("out/figures/line_year_education_{cohort[0]}_{cohort[1]}.png",
-                      cohort = COHORTS)
+                      cohort = config["cohorts"])
 
 
 rule create_figure_birth_educ:
@@ -120,5 +118,7 @@ rule download_data:
         script = "src/data/download_data.sh"
     output:
         file = "data/raw/QOB.txt"
+    params:
+        url = config["data_url"]
     shell:
-        "bash {input.script} {DATA_URL} {output.file}"
+        "bash {input.script} {params.url} {output.file}"

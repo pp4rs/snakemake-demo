@@ -1,0 +1,7 @@
+data_url: "https://economics.mit.edu/files/2853"
+model_types:
+  - iv
+  - ols
+cohorts:
+  - [30, 39]
+  - [940, 49]
