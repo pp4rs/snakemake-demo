@@ -1,0 +1,14 @@
+---
+title: "Reproducing AK"
+author: "Martin Stancsics"
+format:
+  revealjs:
+    transition: slide
+    background-transition: fade
+    chalkboard: true
+---
+
+## Why am I doing this?
+
+- Pretty good intro to snakemake
+- I am curious if they got it right

@@ -1,9 +1,23 @@
-from os.path import splitext
+from os.path import splitext, dirname
 from src.utils.makeutils import find_input_files
 
 
 configfile: "snake_config.yaml"
 MODELS = glob_wildcards("src/model_specs/{model_name}.json").model_name
+
+
+rule presentation:
+    conda: "envs/quarto.yaml"
+    input:
+        qmd = "src/presentation/presentation.qmd"
+    output:
+        html = "out/presentation/presentation.html"
+    params:
+        output_dir = lambda wildcards, output: dirname(output.html)
+    shell:
+        "quarto render {input.qmd} && \
+         rm -rf {params.output_dir}/* && \
+         mv -f src/presentation/presentation.html src/presentation/presentation_files {params.output_dir}"
 
 
 rule paper:
