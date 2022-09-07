@@ -6,6 +6,12 @@ configfile: "snake_config.yaml"
 MODELS = glob_wildcards("src/model_specs/{model_name}.json").model_name
 
 
+rule all:
+    input:
+        paper = "out/paper/paper.pdf",
+        presentation = "out/presentation/presentation.html"
+
+
 rule presentation:
     conda: "envs/quarto.yaml"
     input:
