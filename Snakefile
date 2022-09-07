@@ -125,9 +125,9 @@ rule create_figure_birth_educ:
     conda: "envs/figures.yaml"
     input:
         file = "data/clean/census_data.csv",
-        script = "src/figures/line_year_education.py"
+        script = "src/figures/birth_year_education.py"
     output:
-        file = "out/figures/birth_year_education_{from_}_{to}.png"
+        file = "out/figures/line_year_education_{from_}_{to}.png"
     shell:
         "python {input.script} lineplot {input.file} {output.file} \
                 --cohort {wildcards.from_} {wildcards.to} \
