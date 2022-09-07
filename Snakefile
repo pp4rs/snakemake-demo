@@ -154,3 +154,31 @@ rule download_data:
         url = config["data_url"]
     shell:
         "bash {input.script} {params.url} {output.file}"
+
+
+rule filegraph:
+    conda: "envs/graphviz.yaml"
+    input:
+        "Snakefile"
+    output:
+        "build_graphs/filegraph.pdf"
+    shell:
+        "snakemake --filegraph | dot -Tpdf > build_graphs/filegraph.pdf"
+
+rule rulegraph:
+    conda: "envs/graphviz.yaml"
+    input:
+        "Snakefile"
+    output:
+        "build_graphs/rulegraph.pdf"
+    shell:
+        "snakemake --rulegraph | dot -Tpdf > build_graphs/rulegraph.pdf"
+
+rule dag:
+    conda: "envs/graphviz.yaml"
+    input:
+        "Snakefile"
+    output:
+        "build_graphs/dag.pdf"
+    shell:
+        "snakemake --dag | dot -Tpdf > build_graphs/dag.pdf"

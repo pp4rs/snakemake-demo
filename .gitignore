@@ -3,3 +3,4 @@
 /playground/
 .snakemake/
 __pycache__/
+/build_graphs/

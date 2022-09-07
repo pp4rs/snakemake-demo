@@ -1,0 +1,8 @@
+name: ak-graphviz
+
+channels:
+  - conda-forge
+
+dependencies:
+  - graphviz=5.0.1
+  - bioconda::snakemake-minimal=7.8.5
