@@ -21,8 +21,9 @@ rule presentation:
         html = "out/presentation/presentation.html"
     params:
         output_dir = lambda wildcards, output: dirname(output.html)
+    log: "logs/presentation/presentation.log"
     shell:
-        "quarto render {input.qmd} -P figure_path:{input.figure} && \
+        "quarto render {input.qmd} -P figure_path:{input.figure} 2> {log} && \
          rm -rf {params.output_dir}/* && \
          mv -f src/presentation/presentation.html src/presentation/presentation_files {params.output_dir}"
 
@@ -34,8 +35,9 @@ rule interactive_graph:
         script = "src/figures/birth_year_education_interactive.py"
     output:
         json = "out/figures/interactive_graph.json"
+    log: "logs/figures/interactive_graph.log"
     shell:
-        "python {input.script} {input.file} {output.json}"
+        "python {input.script} {input.file} {output.json} 2> {log}"
 
 
 rule paper:
@@ -46,8 +48,9 @@ rule paper:
         pdf = "out/paper/paper.pdf"
     params:
         output_name = lambda wildcards, output: splitext(output.pdf)[0]
+    log: "logs/paper/paper.pdf"
     shell:
-        "latexmk -pdf -interaction=nonstopmode -jobname={params.output_name} {input.tex}"
+        "latexmk -pdf -interaction=nonstopmode -jobname={params.output_name} {input.tex} 2> {log}"
 
 
 rule regression_tables_all:
@@ -71,8 +74,9 @@ rule regression_table:
         )
     output:
         table = "out/tables/regression_table_{from_}_{to}.tex"
+    log: "logs/tables/regression_table_{from_}_{to}.log"
     shell:
-        "Rscript {input.script} --models '{input.models}' --output_path {output.table}"
+        "Rscript {input.script} --models '{input.models}' --output_path {output.table} 2> {log}"
 
 
 rule all_models:
@@ -94,12 +98,14 @@ rule estimate_model:
         model_spec = "src/model_specs/{model_name}.json"
     output:
         file = "out/models/{model_name}_{model_type}_{from_}_{to}.rds"
+    log: "logs/models/{model_name}_{model_type}_{from_}_{to}.log"
     shell:
         "Rscript {input.script} --data_path {input.file} \
                                 --formula_path {input.model_spec} \
                                 --model_out_path {output.file} \
                                 --cohort {wildcards.from_},{wildcards.to} \
-                                --model_type {wildcards.model_type}"
+                                --model_type {wildcards.model_type} \
+                                2> {log}"
 
 
 rule create_figure_schooling_diff:
@@ -109,10 +115,11 @@ rule create_figure_schooling_diff:
         script = "src/figures/birth_year_education.py"
     output:
         file = "out/figures/barplot_schooling_diff.png"
+    log: "logs/figures/barplot_schooling_diff.log"
     shell:
         "python {input.script} barplot {input.file} {output.file} \
                 --cohorts 30-39 --cohorts 40-49 \
-                --width 8 --height 10 --dpi 300"
+                --width 8 --height 10 --dpi 300 2> {log}"
 
 
 rule all_figures_birth_educ:
@@ -128,10 +135,11 @@ rule create_figure_birth_educ:
         script = "src/figures/birth_year_education.py"
     output:
         file = "out/figures/line_year_education_{from_}_{to}.png"
+    log: "logs/figures/line_year_education_{from_}_{to}.log"
     shell:
         "python {input.script} lineplot {input.file} {output.file} \
                 --cohort {wildcards.from_} {wildcards.to} \
-                --width 8 --height 6 --dpi 300"
+                --width 8 --height 6 --dpi 300 2> {log}"
 
 
 rule clean_data:
@@ -141,8 +149,9 @@ rule clean_data:
         script = "src/data/prepare_data.py"
     output:
         file = "data/clean/census_data.csv"
+    log: "logs/data/clean_data.log"
     shell:
-        "python {input.script} {input.file} {output.file}"
+        "python {input.script} {input.file} {output.file} 2> {log}"
 
 
 rule download_data:
@@ -152,8 +161,9 @@ rule download_data:
         file = "data/raw/QOB.txt"
     params:
         url = config["data_url"]
+    log: "logs/data/download_data.log"
     shell:
-        "bash {input.script} {params.url} {output.file}"
+        "bash {input.script} {params.url} {output.file} 2> {log}"
 
 
 rule filegraph:

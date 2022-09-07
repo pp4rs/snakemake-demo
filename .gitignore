@@ -4,3 +4,4 @@
 .snakemake/
 __pycache__/
 /build_graphs/
+/logs/
