@@ -9,15 +9,27 @@ MODELS = glob_wildcards("src/model_specs/{model_name}.json").model_name
 rule presentation:
     conda: "envs/quarto.yaml"
     input:
-        qmd = "src/presentation/presentation.qmd"
+        qmd = "src/presentation/presentation.qmd",
+        figure = "out/figures/interactive_graph.json"
     output:
         html = "out/presentation/presentation.html"
     params:
         output_dir = lambda wildcards, output: dirname(output.html)
     shell:
-        "quarto render {input.qmd} && \
+        "quarto render {input.qmd} -P figure_path:{input.figure} && \
          rm -rf {params.output_dir}/* && \
          mv -f src/presentation/presentation.html src/presentation/presentation_files {params.output_dir}"
+
+
+rule interactive_graph:
+    conda: "envs/figures.yaml"
+    input:
+        file = "data/clean/census_data.csv",
+        script = "src/figures/birth_year_education_interactive.py"
+    output:
+        json = "out/figures/interactive_graph.json"
+    shell:
+        "python {input.script} {input.file} {output.json}"
 
 
 rule paper:

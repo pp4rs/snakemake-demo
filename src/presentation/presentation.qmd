@@ -3,8 +3,8 @@ title: "Reproducing AK"
 author: "Martin Stancsics"
 format:
   revealjs:
-    transition: slide
-    background-transition: fade
+    transition: "slide"
+    background-transition: "fade"
     chalkboard: true
 ---
 
@@ -12,3 +12,20 @@ format:
 
 - Pretty good intro to snakemake
 - I am curious if they got it right
+
+## Fancy graph
+
+```{python}
+#| tags: [parameters]
+figure_path = None
+```
+
+```{python}
+from os.path import join
+import altair as alt
+
+figure_path = join("../../", figure_path)
+with open(figure_path, "r") as file:
+    json_string = file.read()
+alt.Chart.from_json(json_string)
+```

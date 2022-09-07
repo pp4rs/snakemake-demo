@@ -24,8 +24,10 @@ def aggregate_data(data, cohort_limits=None):
         .aggregate({
             "education": "mean",
             "year_of_birth": "first",
-            "quarter_of_birth": "first"
+            "quarter_of_birth": "first",
+            "year_of_birth": "count"
         }) \
+        .rename(columns={"year_of_birth": "num_obs"}) \
         .reset_index()
     return data
 
