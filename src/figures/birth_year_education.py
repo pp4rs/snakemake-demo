@@ -20,15 +20,17 @@ def aggregate_data(data, cohort_limits=None):
     if cohort_limits:
         data = data[data["year_of_birth"].between(*cohort_limits)]
     data = data \
-        .groupby(["ageq"]) \
+        .groupby(["year_of_birth", "quarter_of_birth"]) \
         .aggregate({
             "education": "mean",
-            "year_of_birth": "first",
-            "quarter_of_birth": "first",
             "census": "count"
         }) \
         .rename(columns={"census": "num_obs"}) \
         .reset_index()
+
+    data["year_quarter_of_birth"] = data["year_of_birth"] + \
+        data["quarter_of_birth"] / 4 - 0.25
+
     return data
 
 
@@ -42,14 +44,14 @@ def create_line_plot(data):
     fig, ax = plt.subplots()
     sns.lineplot(
         data=data,
-        x="ageq",
+        x="year_quarter_of_birth",
         y="education",
         color="black",
         ax=ax
     )
     sns.scatterplot(
         data=data,
-        x="ageq",
+        x="year_quarter_of_birth",
         y="education",
         hue="quarter_of_birth",
         alpha=1,

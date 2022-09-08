@@ -19,7 +19,7 @@ def create_line_plot(data):
     chart_line = alt.Chart(data).mark_line(
         color="black"
     ).encode(
-        x=alt.X("ageq:Q", title="Year of Birth"),
+        x=alt.X("year_quarter_of_birth:Q", title="Year of Birth"),
         y=alt.Y("education:Q", title="Education", scale=alt.Scale(zero=False))
     ).properties(
         width=400,
@@ -30,7 +30,7 @@ def create_line_plot(data):
         filled=True,
         size=80
     ).encode(
-        x=alt.X("ageq:Q", title="Year of Birth"),
+        x=alt.X("year_quarter_of_birth:Q", title="Year of Birth"),
         y=alt.Y("education:Q", title="Education"),
         color=alt.condition(
             brush, 
