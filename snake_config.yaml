@@ -1,4 +1,4 @@
-data_url: "https://economics.mit.edu/files/2853"
+data_url: "https://economics.mit.edu/sites/default/files/inline-files/QOB.rar"
 model_types:
   - iv
   - ols
