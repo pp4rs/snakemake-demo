@@ -1,4 +1,4 @@
-# Snakemake dempnstration
+# Snakemake demonstration
 Reproduces some tables and graphs from Angrist &amp; Krueger (1991).
 
 ## How to compile
@@ -15,6 +15,6 @@ The steps to build the project are described in its snakemake file. If snakemake
 ```bash
     cd /path/to/project-for-pp4rs
     conda activate snakemake
-    snakemake --cores N --use-conda
+    snakemake --cores all --use-conda
 ```
-assuming that snakemake is available in the conda environment names snakemake. N is the number of jobs you wish to run in parallel.
+assuming that snakemake is available in the conda environment names snakemake. `--cores all` sets the number of parallel jobs equal to the number of your logical cpu cores. If you wish to run `N` jobs in parallel, replace it with `--cores N`.
