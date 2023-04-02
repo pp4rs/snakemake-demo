@@ -1,4 +1,4 @@
-library(lfe)
+library(fixest)
 library(modelsummary)
 library(stringr)
 library(optparse)
@@ -9,7 +9,7 @@ library(dplyr)
 
 create_extra_row_tibble <- function(models) {
 
-        birth_dummies = rep("Yes", length(models))
+    birth_dummies = rep("Yes", length(models))
     region_dummies = map_chr(
         models,
         function(model) ifelse("soatl" %in% rownames(model$coef), "Yes", "No")
@@ -54,7 +54,7 @@ main <- function() {
 
     coef_names <- c(
         "education" = "Years of education",
-        "education(fit)" = "Years of education",
+        "fit_education" = "Years of education",
         "race" = "Race (1 = black)",
         "smsa" = "SMSA (1 = center city)",
         "married" = "Married (1 = married)",

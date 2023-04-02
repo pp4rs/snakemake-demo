@@ -1,5 +1,5 @@
 library(optparse)
-library(lfe)
+library(fixest)
 library(tibble)
 library(readr)
 library(dplyr)
@@ -16,7 +16,7 @@ load_and_filter_data <- function(data_path, cohort_limits) {
 
 
 estimate_model <- function(df, form) {
-    model <- felm(form, df)
+    model <- feols(form, df)
     model$data <- NULL
     model$model <- NULL
 
@@ -44,22 +44,20 @@ load_formula <- function(specs, iv=FALSE) {
         }
 
         iv_part <- paste(
-            "(",
             paste(instrumented_vars, collapse = " | "),
             "~",
-            paste(instruments, collapse = " + "),
-            ")"
+            paste(instruments, collapse = " + ")
         )
-    } else {
-        iv_part <- "0"
     }
 
     formula_str <- paste(
         dep_var, "~",
         paste(indep_vars, collapse = " + "), "|",
-        fixed_effects_part, "|",
-        iv_part
+        fixed_effects_part
     )
+    if (iv) {
+        formula_str <- paste(formula_str, "|", iv_part)
+    }
 
     return(as.formula(formula_str))
 }
