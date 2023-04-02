@@ -1,0 +1,8 @@
+name: ak-download
+
+channels:
+  - conda-forge
+
+dependencies:
+  - unrar=0.4
+  - wget=1.20.3

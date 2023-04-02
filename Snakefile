@@ -155,6 +155,7 @@ rule clean_data:
 
 
 rule download_data:
+    conda: "envs/download.yaml"
     input:
         script = "src/data/download_data.sh"
     output:
