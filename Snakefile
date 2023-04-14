@@ -167,6 +167,13 @@ rule download_data:
         "bash {input.script} {params.url} {output.file} 2> {log}"
 
 
+rule build_graphs:
+    input:
+        "build_graphs/filegraph.pdf",
+        "build_graphs/rulegraph.pdf",
+        "build_graphs/dag.pdf"
+
+
 rule filegraph:
     conda: "envs/graphviz.yaml"
     input:
@@ -176,6 +183,7 @@ rule filegraph:
     shell:
         "snakemake --filegraph | dot -Tpdf > build_graphs/filegraph.pdf"
 
+
 rule rulegraph:
     conda: "envs/graphviz.yaml"
     input:
@@ -184,6 +192,7 @@ rule rulegraph:
         "build_graphs/rulegraph.pdf"
     shell:
         "snakemake --rulegraph | dot -Tpdf > build_graphs/rulegraph.pdf"
+
 
 rule dag:
     conda: "envs/graphviz.yaml"
