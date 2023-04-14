@@ -5,3 +5,4 @@
 __pycache__/
 /build_graphs/
 /logs/
+.DS_Store
