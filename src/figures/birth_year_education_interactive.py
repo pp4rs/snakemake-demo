@@ -1,6 +1,7 @@
+import sys
+
 import pandas as pd
 import altair as alt
-import typer
 from birth_year_education import aggregate_data
 
 
@@ -93,4 +94,12 @@ def main(input_data: str, output_path: str, cohort: tuple[int, int] = (20, 49)):
 
 
 if __name__ == "__main__":
-    typer.run(main)
+
+    with open(snakemake.log[0], "w") as logfile:
+        sys.stderr = sys.stdout = logfile
+
+        main(
+            input_data=snakemake.input["file"],
+            output_path=snakemake.output["json"],
+            cohort=snakemake.params["cohort"]
+        )

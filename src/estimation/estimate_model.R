@@ -1,4 +1,3 @@
-library(optparse)
 library(fixest)
 library(tibble)
 library(readr)
@@ -65,33 +64,38 @@ load_formula <- function(specs, iv=FALSE) {
 
 main <- function() {
 
-    option_list <- list(
-        make_option(c("--data_path"), type = "character"),
-        make_option(c("--formula_path"), type = "character"),
-        make_option(c("--model_out_path"), type = "character"),
-        make_option(c("--cohort"), type = "character"),
-        make_option(c("--model_type"), type = "character")
-    )
-    opt <- parse_args(OptionParser(option_list = option_list))
+    file.create(snakemake@log[[1]])
+    logfile <- file(snakemake@log[[1]], "wt")
+    for (stream in c("output", "message")) {
+        sink(file = logfile, type = stream)
+    }
 
-    if (opt$model_type == "iv") {
+    if (snakemake@wildcards["model_type"] == "iv") {
         iv <- TRUE
-    } else if (opt$model_type == "ols") {
+    } else if (snakemake@wildcards["model_type"] == "ols") {
         iv <- FALSE
     } else {
         stop("model_type must be either 'iv' or 'ols'")
     }
 
-    specs <- read_json(opt$formula_path)
+    specs <- read_json(snakemake@input[["model_spec"]])
 
-    limits <- as.integer(str_split(opt$cohort, ",")[[1]])
-    df <- load_and_filter_data(opt$data_path, limits)
+    limits <- as.integer(c(
+        snakemake@wildcards[["from_"]],
+        snakemake@wildcards[["to"]]
+    ))
+    df <- load_and_filter_data(snakemake@input[["file"]], limits)
     form <- load_formula(specs, iv=iv)
 
     model <- estimate_model(df, form)
     model$name <- specs$name
-    model$type <- opt$model_type
-    saveRDS(model, opt$model_out_path)
+    model$type <- snakemake@wildcards[["model_type"]]
+    saveRDS(model, snakemake@output[["file"]])
+
+    for (stream in c("output", "message")) {
+        sink(type = stream)
+    }
+    close(logfile)
 
 }
 

@@ -1,7 +1,6 @@
 library(fixest)
 library(modelsummary)
 library(stringr)
-library(optparse)
 library(purrr)
 library(tibble)
 library(dplyr)
@@ -32,15 +31,13 @@ create_extra_row_tibble <- function(models) {
 
 main <- function() {
 
-    option_list <- list(
-        make_option(c("--models"), type = "character",
-                    help = "comma-separated paths to models"),
-        make_option(c("--output_path"), type = "character")
-    )
+    file.create(snakemake@log[[1]])
+    logfile <- file(snakemake@log[[1]], "wt")
+    for (stream in c("output", "message")) {
+        sink(file = logfile, type = stream)
+    }
 
-    opt <- parse_args(OptionParser(option_list = option_list))
-
-    paths <- str_split(opt$models, " ")[[1]]
+    paths <- snakemake@input[["models"]]
     models <- map(paths, readRDS)
     names(models) <- map_chr(models, function(model) paste(str_to_upper(model$type), model$name))
 
@@ -65,11 +62,16 @@ main <- function() {
     options(modelsummary_format_numeric_latex = "mathmode")
     modelsummary(
         models,
-        output = opt$output_path,
+        output = snakemake@output[["table"]],
         gof_omit = ".*",
         coef_map = coef_names,
         add_rows = extra_rows
     )
+
+    for (stream in c("output", "message")) {
+        sink(type = stream)
+    }
+    close(logfile)
 
 }
 

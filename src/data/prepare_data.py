@@ -1,6 +1,7 @@
+import sys
+
 import pandas as pd
 import numpy as np
-import typer
 
 
 def read_data(path):
@@ -76,14 +77,17 @@ def prepare_data(data):
     return data
 
 
-def main(input_path: str, output_path: str):
+def main():
     """Main function."""
 
-    data = read_data(input_path)
-    data = prepare_data(data)
-    data.to_csv(output_path, index=False)
-    print(f"Exported data to {output_path}")
+    with open(snakemake.log[0], "w") as logfile:
+        sys.stderr = sys.stdout = logfile
+
+        data = read_data(snakemake.input["file"])
+        data = prepare_data(data)
+        data.to_csv(snakemake.output["file"], index=False)
+        print(f"Exported data to {snakemake.output['file']}")
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    main()

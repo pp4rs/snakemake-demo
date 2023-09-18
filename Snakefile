@@ -31,13 +31,14 @@ rule presentation:
 rule interactive_graph:
     conda: "envs/figures.yaml"
     input:
-        file = "data/clean/census_data.csv",
-        script = "src/figures/birth_year_education_interactive.py"
+        file = "data/clean/census_data.csv"
     output:
         json = "out/figures/interactive_graph.json"
+    params:
+        cohort = (20, 49)
     log: "logs/figures/interactive_graph.log"
-    shell:
-        "python {input.script} {input.file} {output.json} 2> {log}"
+    script:
+        "src/figures/birth_year_education_interactive.py"
 
 
 rule paper:
@@ -55,7 +56,6 @@ rule paper:
 
 rule regression_tables_all:
     input:
-        script = "src/estimation/estimate_model.R",
         table = expand(
             "out/tables/regression_table_{cohort[0]}_{cohort[1]}.tex",
             cohort = config["cohorts"]
@@ -65,7 +65,6 @@ rule regression_tables_all:
 rule regression_table:
     conda: "envs/estimation.yaml"
     input:
-        script = "src/tables/regression_table.R",
         models = expand(
             "out/models/{model_name}_{model_type}_{from_}_{to}.rds",
             model_name = MODELS,
@@ -75,13 +74,12 @@ rule regression_table:
     output:
         table = "out/tables/regression_table_{from_}_{to}.tex"
     log: "logs/tables/regression_table_{from_}_{to}.log"
-    shell:
-        "Rscript {input.script} --models '{input.models}' --output_path {output.table} 2> {log}"
+    script:
+        "src/tables/regression_table.R"
 
 
 rule all_models:
     input:
-        script = "src/estimation/estimate_model.R",
         file = expand(
             "out/models/{model_name}_{model_type}_{cohort[0]}_{cohort[1]}.rds",
             model_name = MODELS,
@@ -94,32 +92,29 @@ rule estimate_model:
     conda: "envs/estimation.yaml"
     input:
         file = "data/clean/census_data.csv",
-        script = "src/estimation/estimate_model.R",
         model_spec = "src/model_specs/{model_name}.json"
     output:
         file = "out/models/{model_name}_{model_type}_{from_}_{to}.rds"
     log: "logs/models/{model_name}_{model_type}_{from_}_{to}.log"
-    shell:
-        "Rscript {input.script} --data_path {input.file} \
-                                --formula_path {input.model_spec} \
-                                --model_out_path {output.file} \
-                                --cohort {wildcards.from_},{wildcards.to} \
-                                --model_type {wildcards.model_type} \
-                                2> {log}"
+    script:
+        "src/estimation/estimate_model.R"
 
 
 rule create_figure_schooling_diff:
     conda: "envs/figures.yaml"
     input:
         file = "data/clean/census_data.csv",
-        script = "src/figures/birth_year_education.py"
     output:
         file = "out/figures/barplot_schooling_diff.png"
+    params:
+        plot_type = "barplot",
+        width = 8,
+        height = 6,
+        dpi = 300,
+        cohorts = ["30-39", "40-49"]
     log: "logs/figures/barplot_schooling_diff.log"
-    shell:
-        "python {input.script} barplot {input.file} {output.file} \
-                --cohorts 30-39 --cohorts 40-49 \
-                --width 8 --height 10 --dpi 300 2> {log}"
+    script:
+        "src/figures/birth_year_education.py"
 
 
 rule all_figures_birth_educ:
@@ -132,26 +127,27 @@ rule create_figure_birth_educ:
     conda: "envs/figures.yaml"
     input:
         file = "data/clean/census_data.csv",
-        script = "src/figures/birth_year_education.py"
     output:
         file = "out/figures/line_year_education_{from_}_{to}.png"
+    params:
+        plot_type = "lineplot",
+        width = 8,
+        height = 6,
+        dpi = 300
     log: "logs/figures/line_year_education_{from_}_{to}.log"
-    shell:
-        "python {input.script} lineplot {input.file} {output.file} \
-                --cohort {wildcards.from_} {wildcards.to} \
-                --width 8 --height 6 --dpi 300 2> {log}"
+    script:
+        "src/figures/birth_year_education.py"
 
 
 rule clean_data:
     conda: "envs/data-prep.yaml"
     input:
         file = "data/raw/QOB.txt",
-        script = "src/data/prepare_data.py"
     output:
         file = "data/clean/census_data.csv"
     log: "logs/data/clean_data.log"
-    shell:
-        "python {input.script} {input.file} {output.file} 2> {log}"
+    script:
+        "src/data/prepare_data.py"
 
 
 rule download_data:

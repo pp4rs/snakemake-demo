@@ -1,10 +1,8 @@
+import sys
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import typer
-
-
-app = typer.Typer()
 
 
 def aggregate_data(data, cohort_limits=None):
@@ -111,7 +109,6 @@ def save_plot(fig, path, width, height, dpi):
     fig.savefig(path, dpi=dpi)
 
 
-@app.command()
 def lineplot(input_data: str, output_path: str,
              cohort: tuple[int, int] = (20, 49),
              width: int = 6, height: int = 4, dpi: int = 300):
@@ -122,7 +119,6 @@ def lineplot(input_data: str, output_path: str,
     save_plot(fig, output_path, width, height, dpi)
 
 
-@app.command()
 def barplot(input_data: str, output_path: str,
             cohorts: list[str] = ["30-39", "40-49"],
             width: int = 6, height: int = 8, dpi: int = 300):
@@ -137,4 +133,34 @@ def barplot(input_data: str, output_path: str,
 
 
 if __name__ == "__main__":
-    app()
+
+    with open(snakemake.log[0], "w") as logfile:
+        sys.stderr = sys.stdout = logfile
+
+
+        if snakemake.params["plot_type"] == "lineplot":
+            cohort = (
+                int(snakemake.wildcards["from_"]),
+                int(snakemake.wildcards["to"])
+            )
+            lineplot(
+                input_data=snakemake.input["file"],
+                output_path=snakemake.output["file"],
+                cohort=cohort,
+                width=snakemake.params["width"],
+                height=snakemake.params["height"],
+                dpi=snakemake.params["dpi"]
+            )
+
+        elif snakemake.params["plot_type"] == "barplot":
+            barplot(
+                input_data=snakemake.input["file"],
+                output_path=snakemake.output["file"],
+                cohorts=snakemake.params["cohorts"],
+                width=snakemake.params["width"],
+                height=snakemake.params["height"],
+                dpi=snakemake.params["dpi"]
+            )
+
+        else:
+            raise ValueError(f"Unknown plot type: {snakemake.params['plot_type']}")
