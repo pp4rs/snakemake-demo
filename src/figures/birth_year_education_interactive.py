@@ -37,7 +37,7 @@ def create_line_plot(data):
                 brush,
                 alt.Color("quarter_of_birth:O", title="Quarter of birth"),
                 alt.value("lightgray"),
-            ),
+            ),  # type: ignore
         )
         .properties(width=400, height=400)
         .add_selection(brush)
@@ -94,11 +94,11 @@ def main(input_data: str, output_path: str, cohort: tuple[int, int] = (20, 49)):
 
 
 if __name__ == "__main__":
-    with open(snakemake.log[0], "w") as logfile:
+    with open(snakemake.log[0], "w") as logfile:  # type: ignore # noqa: F821
         sys.stderr = sys.stdout = logfile
 
         main(
-            input_data=snakemake.input["file"],
-            output_path=snakemake.output["json"],
-            cohort=snakemake.params["cohort"],
+            input_data=snakemake.input["file"],  # type: ignore # noqa: F821
+            output_path=snakemake.output["json"],  # type: ignore # noqa: F821
+            cohort=snakemake.params["cohort"],  # type: ignore # noqa: F821
         )

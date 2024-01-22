@@ -138,29 +138,30 @@ def barplot(
 
 
 if __name__ == "__main__":
-    with open(snakemake.log[0], "w") as logfile:
+    
+    with open(snakemake.log[0], "w") as logfile:  # type: ignore # noqa: F821
         sys.stderr = sys.stdout = logfile
 
-        if snakemake.params["plot_type"] == "lineplot":
-            cohort = (int(snakemake.wildcards["from_"]), int(snakemake.wildcards["to"]))
+        if snakemake.params["plot_type"] == "lineplot":  # type: ignore # noqa: F821
+            cohort = (int(snakemake.wildcards["from_"]), int(snakemake.wildcards["to"]))  # type: ignore # noqa: F821
             lineplot(
-                input_data=snakemake.input["file"],
-                output_path=snakemake.output["file"],
+                input_data=snakemake.input["file"],  # type: ignore # noqa: F821
+                output_path=snakemake.output["file"],  # type: ignore # noqa: F821
                 cohort=cohort,
-                width=snakemake.params["width"],
-                height=snakemake.params["height"],
-                dpi=snakemake.params["dpi"],
+                width=snakemake.params["width"],  # type: ignore # noqa: F821
+                height=snakemake.params["height"],  # type: ignore # noqa: F821
+                dpi=snakemake.params["dpi"],  # type: ignore # noqa: F821
             )
 
-        elif snakemake.params["plot_type"] == "barplot":
+        elif snakemake.params["plot_type"] == "barplot":  # type: ignore # noqa: F821
             barplot(
-                input_data=snakemake.input["file"],
-                output_path=snakemake.output["file"],
-                cohorts=snakemake.params["cohorts"],
-                width=snakemake.params["width"],
-                height=snakemake.params["height"],
-                dpi=snakemake.params["dpi"],
+                input_data=snakemake.input["file"],  # type: ignore # noqa: F821
+                output_path=snakemake.output["file"],  # type: ignore # noqa: F821
+                cohorts=snakemake.params["cohorts"],  # type: ignore # noqa: F821
+                width=snakemake.params["width"],  # type: ignore # noqa: F821
+                height=snakemake.params["height"],  # type: ignore # noqa: F821
+                dpi=snakemake.params["dpi"],  # type: ignore # noqa: F821
             )
 
         else:
-            raise ValueError(f"Unknown plot type: {snakemake.params['plot_type']}")
+            raise ValueError(f"Unknown plot type: {snakemake.params['plot_type']}")  # type: ignore # noqa: F821

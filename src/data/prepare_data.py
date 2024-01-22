@@ -81,13 +81,13 @@ def prepare_data(data):
 def main():
     """Main function."""
 
-    with open(snakemake.log[0], "w") as logfile:
+    with open(snakemake.log[0], "w") as logfile:  # type: ignore # noqa: F821
         sys.stderr = sys.stdout = logfile
 
-        data = read_data(snakemake.input["file"])
+        data = read_data(snakemake.input["file"])  # type: ignore # noqa: F821
         data = prepare_data(data)
-        data.to_csv(snakemake.output["file"], index=False)
-        print(f"Exported data to {snakemake.output['file']}")
+        data.to_csv(snakemake.output["file"], index=False)  # type: ignore # noqa: F821
+        print(f"Exported data to {snakemake.output['file']}")  # type: ignore # noqa: F821
 
 
 if __name__ == "__main__":
