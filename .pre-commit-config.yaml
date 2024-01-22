@@ -1,0 +1,13 @@
+repos:
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.14
+    hooks:
+      - id: ruff
+      - id: ruff-format
+
+  - repo: https://github.com/lorenzwalthert/precommit
+    rev: v0.4.0
+    hooks:
+      - id: style-files
+        args: ["--indent_by=4L"]

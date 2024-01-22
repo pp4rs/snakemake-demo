@@ -8,9 +8,9 @@ library(stringr)
 
 
 load_and_filter_data <- function(data_path, cohort_limits) {
-  df <- read_csv(data_path) %>%
-    filter(year_of_birth >= cohort_limits[1] & year_of_birth <= cohort_limits[2])
-  return(df)
+    df <- read_csv(data_path) %>%
+        filter(year_of_birth >= cohort_limits[1] & year_of_birth <= cohort_limits[2])
+    return(df)
 }
 
 
@@ -23,7 +23,7 @@ estimate_model <- function(df, form) {
 }
 
 
-load_formula <- function(specs, iv=FALSE) {
+load_formula <- function(specs, iv = FALSE) {
     dep_var <- specs$dep_var
     indep_vars <- unlist(specs$indep_vars)
 
@@ -63,7 +63,6 @@ load_formula <- function(specs, iv=FALSE) {
 
 
 main <- function() {
-
     file.create(snakemake@log[[1]])
     logfile <- file(snakemake@log[[1]], "wt")
     for (stream in c("output", "message")) {
@@ -85,7 +84,7 @@ main <- function() {
         snakemake@wildcards[["to"]]
     ))
     df <- load_and_filter_data(snakemake@input[["file"]], limits)
-    form <- load_formula(specs, iv=iv)
+    form <- load_formula(specs, iv = iv)
 
     model <- estimate_model(df, form)
     model$name <- specs$name
@@ -96,7 +95,6 @@ main <- function() {
         sink(type = stream)
     }
     close(logfile)
-
 }
 
 

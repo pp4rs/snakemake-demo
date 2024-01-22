@@ -7,9 +7,8 @@ library(dplyr)
 
 
 create_extra_row_tibble <- function(models) {
-
-    birth_dummies = rep("Yes", length(models))
-    region_dummies = map_chr(
+    birth_dummies <- rep("Yes", length(models))
+    region_dummies <- map_chr(
         models,
         function(model) ifelse("soatl" %in% rownames(model$coef), "Yes", "No")
     )
@@ -20,17 +19,15 @@ create_extra_row_tibble <- function(models) {
     extra_rows <- extra_rows_list %>%
         as_tibble() %>%
         t() %>%
-        as_tibble() %>% 
+        as_tibble() %>%
         mutate(term = c("9 Year-of-birth dummies", "8 Region-of-residence dummies")) %>%
         select(term, everything())
 
     return(extra_rows)
-
 }
 
 
 main <- function() {
-
     file.create(snakemake@log[[1]])
     logfile <- file(snakemake@log[[1]], "wt")
     for (stream in c("output", "message")) {
@@ -72,7 +69,6 @@ main <- function() {
         sink(type = stream)
     }
     close(logfile)
-
 }
 
 

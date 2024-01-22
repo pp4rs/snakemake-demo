@@ -138,7 +138,6 @@ def barplot(
 
 
 if __name__ == "__main__":
-    
     with open(snakemake.log[0], "w") as logfile:  # type: ignore # noqa: F821
         sys.stderr = sys.stdout = logfile
 
