@@ -11,13 +11,13 @@ def find_input_files(tex_file):
         List[str]: the list of included files
     """
 
-    with open(tex_file, 'r') as file:
+    with open(tex_file, "r") as file:
         tex_contents = file.read()
 
     patterns = [
         re.compile(r"\\input\{(.*)\}"),
         re.compile(r"\\include\{(.*)\}"),
-        re.compile(r"\\includegraphics(?:\[.*\])?\{(.*)\}")
+        re.compile(r"\\includegraphics(?:\[.*\])?\{(.*)\}"),
     ]
 
     paths = sum((pattern.findall(tex_contents) for pattern in patterns), [])

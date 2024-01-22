@@ -17,17 +17,16 @@ def aggregate_data(data, cohort_limits=None):
     """
     if cohort_limits:
         data = data[data["year_of_birth"].between(*cohort_limits)]
-    data = data \
-        .groupby(["year_of_birth", "quarter_of_birth"]) \
-        .aggregate({
-            "education": "mean",
-            "census": "count"
-        }) \
-        .rename(columns={"census": "num_obs"}) \
+    data = (
+        data.groupby(["year_of_birth", "quarter_of_birth"])
+        .aggregate({"education": "mean", "census": "count"})
+        .rename(columns={"census": "num_obs"})
         .reset_index()
+    )
 
-    data["year_quarter_of_birth"] = data["year_of_birth"] + \
-        data["quarter_of_birth"] / 4 - 0.25
+    data["year_quarter_of_birth"] = (
+        data["year_of_birth"] + data["quarter_of_birth"] / 4 - 0.25
+    )
 
     return data
 
@@ -41,11 +40,7 @@ def create_line_plot(data):
     """
     fig, ax = plt.subplots()
     sns.lineplot(
-        data=data,
-        x="year_quarter_of_birth",
-        y="education",
-        color="black",
-        ax=ax
+        data=data, x="year_quarter_of_birth", y="education", color="black", ax=ax
     )
     sns.scatterplot(
         data=data,
@@ -54,7 +49,7 @@ def create_line_plot(data):
         hue="quarter_of_birth",
         alpha=1,
         s=80,
-        ax=ax
+        ax=ax,
     )
 
     ax.set_xlabel("Year of Birth")
@@ -83,14 +78,14 @@ def create_bar_plot(data, cohorts):
             x="year_of_birth",
             y="education_diff_ma5",
             hue="quarter_of_birth",
-            ax=ax[i]
+            ax=ax[i],
         )
         ax[i].set_ylabel("Schooling differential")
         ax[i].set_xlabel("")
         if i > 0:
             ax[i].get_legend().remove()
         else:
-            ax[i].get_legend().set_title('Quarter of birth')
+            ax[i].get_legend().set_title("Quarter of birth")
 
     ax[1].set_xlabel("Year of Birth")
     fig.suptitle("Season of birth and years of schooling")
@@ -109,9 +104,14 @@ def save_plot(fig, path, width, height, dpi):
     fig.savefig(path, dpi=dpi)
 
 
-def lineplot(input_data: str, output_path: str,
-             cohort: tuple[int, int] = (20, 49),
-             width: int = 6, height: int = 4, dpi: int = 300):
+def lineplot(
+    input_data: str,
+    output_path: str,
+    cohort: tuple[int, int] = (20, 49),
+    width: int = 6,
+    height: int = 4,
+    dpi: int = 300,
+):
     """Create a line plot of schooling attainment by birth quarter."""
     data = pd.read_csv(input_data)
     aggregated_data = aggregate_data(data, cohort)
@@ -119,9 +119,14 @@ def lineplot(input_data: str, output_path: str,
     save_plot(fig, output_path, width, height, dpi)
 
 
-def barplot(input_data: str, output_path: str,
-            cohorts: list[str] = ["30-39", "40-49"],
-            width: int = 6, height: int = 8, dpi: int = 300):
+def barplot(
+    input_data: str,
+    output_path: str,
+    cohorts: list[str] = ["30-39", "40-49"],
+    width: int = 6,
+    height: int = 8,
+    dpi: int = 300,
+):
     """Create a barplot of schooling differential by birth quarter."""
     data = pd.read_csv(input_data)
     cohort_tuples = []
@@ -133,23 +138,18 @@ def barplot(input_data: str, output_path: str,
 
 
 if __name__ == "__main__":
-
     with open(snakemake.log[0], "w") as logfile:
         sys.stderr = sys.stdout = logfile
 
-
         if snakemake.params["plot_type"] == "lineplot":
-            cohort = (
-                int(snakemake.wildcards["from_"]),
-                int(snakemake.wildcards["to"])
-            )
+            cohort = (int(snakemake.wildcards["from_"]), int(snakemake.wildcards["to"]))
             lineplot(
                 input_data=snakemake.input["file"],
                 output_path=snakemake.output["file"],
                 cohort=cohort,
                 width=snakemake.params["width"],
                 height=snakemake.params["height"],
-                dpi=snakemake.params["dpi"]
+                dpi=snakemake.params["dpi"],
             )
 
         elif snakemake.params["plot_type"] == "barplot":
@@ -159,7 +159,7 @@ if __name__ == "__main__":
                 cohorts=snakemake.params["cohorts"],
                 width=snakemake.params["width"],
                 height=snakemake.params["height"],
-                dpi=snakemake.params["dpi"]
+                dpi=snakemake.params["dpi"],
             )
 
         else:

@@ -17,10 +17,7 @@ def read_data(path):
 
     colnames = [f"v{i+1}" for i in range(27)]
     data = pd.read_csv(
-        "data/raw/QOB.txt",
-        delim_whitespace=True,
-        header=None,
-        names=colnames
+        "data/raw/QOB.txt", delim_whitespace=True, header=None, names=colnames
     )
     print(f"Read {len(data)} rows")
 
@@ -42,7 +39,7 @@ def read_data(path):
         "v21": "soatl",
         "v24": "wnocent",
         "v25": "wsocent",
-        "v27": "year_of_birth"
+        "v27": "year_of_birth",
     }
     data = data.rename(columns=rename_dict)
 
@@ -67,12 +64,16 @@ def prepare_data(data):
         np.where(
             (30 <= data["year_of_birth"]) & (data["year_of_birth"] <= 39),
             "30-39",
-            "20-29"
-        )
+            "20-29",
+        ),
     )
-    data.loc[data["census"] == 80, "ageq"] = data.loc[data["census"] == 80, "ageq"] - 1900
+    data.loc[data["census"] == 80, "ageq"] = (
+        data.loc[data["census"] == 80, "ageq"] - 1900
+    )
     data["ageq_squared"] = data["ageq"] ** 2
-    data["year_of_birth_within_decade"] = [int(str(year)[-1]) for year in data["year_of_birth"]]
+    data["year_of_birth_within_decade"] = [
+        int(str(year)[-1]) for year in data["year_of_birth"]
+    ]
 
     return data
 

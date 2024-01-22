@@ -17,32 +17,30 @@ def create_line_plot(data):
 
     brush = alt.selection_interval()
 
-    chart_line = alt.Chart(data).mark_line(
-        color="black"
-    ).encode(
-        x=alt.X("year_quarter_of_birth:Q", title="Year of Birth"),
-        y=alt.Y("education:Q", title="Education", scale=alt.Scale(zero=False))
-    ).properties(
-        width=400,
-        height=400
+    chart_line = (
+        alt.Chart(data)
+        .mark_line(color="black")
+        .encode(
+            x=alt.X("year_quarter_of_birth:Q", title="Year of Birth"),
+            y=alt.Y("education:Q", title="Education", scale=alt.Scale(zero=False)),
+        )
+        .properties(width=400, height=400)
     )
 
-    chart_points = alt.Chart(data).mark_point(
-        filled=True,
-        size=80
-    ).encode(
-        x=alt.X("year_quarter_of_birth:Q", title="Year of Birth"),
-        y=alt.Y("education:Q", title="Education"),
-        color=alt.condition(
-            brush, 
-            alt.Color("quarter_of_birth:O", title="Quarter of birth"),
-            alt.value('lightgray')
+    chart_points = (
+        alt.Chart(data)
+        .mark_point(filled=True, size=80)
+        .encode(
+            x=alt.X("year_quarter_of_birth:Q", title="Year of Birth"),
+            y=alt.Y("education:Q", title="Education"),
+            color=alt.condition(
+                brush,
+                alt.Color("quarter_of_birth:O", title="Quarter of birth"),
+                alt.value("lightgray"),
+            ),
         )
-    ).properties(
-        width=400,
-        height=400
-    ).add_selection(
-        brush
+        .properties(width=400, height=400)
+        .add_selection(brush)
     )
 
     return (chart_line + chart_points), brush
@@ -57,13 +55,17 @@ def create_avg_bars(data):
     Returns:
         alt.Chart: bar plot
     """
-    chart = alt.Chart(data).mark_bar().encode(
-        x=alt.X("quarter_of_birth:O", title="Quarter of birth"),
-        y=alt.Y("mean(education):Q", title="Education", scale=alt.Scale(zero=False)),
-        color=alt.Color("quarter_of_birth:O", title="Quarter of birth"),
-    ).properties(
-        width=200,
-        height=400
+    chart = (
+        alt.Chart(data)
+        .mark_bar()
+        .encode(
+            x=alt.X("quarter_of_birth:O", title="Quarter of birth"),
+            y=alt.Y(
+                "mean(education):Q", title="Education", scale=alt.Scale(zero=False)
+            ),
+            color=alt.Color("quarter_of_birth:O", title="Quarter of birth"),
+        )
+        .properties(width=200, height=400)
     )
 
     return chart
@@ -79,9 +81,7 @@ def create_combined_plot(data):
         alt.Chart: combined plot
     """
     chart_line, brush = create_line_plot(data)
-    chart_bars = create_avg_bars(data).transform_filter(
-        brush
-    )
+    chart_bars = create_avg_bars(data).transform_filter(brush)
 
     return chart_line | chart_bars
 
@@ -94,12 +94,11 @@ def main(input_data: str, output_path: str, cohort: tuple[int, int] = (20, 49)):
 
 
 if __name__ == "__main__":
-
     with open(snakemake.log[0], "w") as logfile:
         sys.stderr = sys.stdout = logfile
 
         main(
             input_data=snakemake.input["file"],
             output_path=snakemake.output["json"],
-            cohort=snakemake.params["cohort"]
+            cohort=snakemake.params["cohort"],
         )
